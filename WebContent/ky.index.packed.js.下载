@@ -1,0 +1,344 @@
+//延时hover
+(function($) {
+    $.fn.hoverDelay = function(options) {
+        var defaults = {
+            hoverDuring: 200,
+            outDuring: 200,
+            hoverEvent: function() {
+                $.noop();
+            },
+            outEvent: function() {
+                $.noop();
+            }
+        };
+        var sets = $.extend(defaults, options || {});
+        var hoverTimer, outTimer, that = this;
+        return $(this).each(function() {
+            $(this).hover(function() {
+                clearTimeout(outTimer);
+                hoverTimer = setTimeout(function() { sets.hoverEvent.apply(that) }, sets.hoverDuring);
+            }, function() {
+                clearTimeout(hoverTimer);
+                outTimer = setTimeout(function() { sets.outEvent.apply(that) }, sets.outDuring);
+            });
+        });
+    }
+
+    var oTarget = $('.navigation').parent();
+    oTarget.after('<div class="jia_qq_link" style="display:none;"><a href="http://www.bangxuetang.com/zt/ms_19pub?isapp=1" target="_blank"><img src="http://efile.kaoyan.com/img/2017/11/30/155622_5a1fb9a6447e2.jpg" width="1000" height="90" alt="" /></a><div>');
+
+})(jQuery);
+//设置，删除，获取cookie
+function setCookieFun(name, value) {
+    var exp = new Date();
+    exp.setTime(exp.getTime() + 24 * 60 * 60 * 1000);
+    var path = '/';
+    var domain = '.kaoyan.com';
+    var secure = false;
+    document.cookie = name + "=" + escape(value) + ((exp == null) ? "" : ("; expires=" + exp.toGMTString())) +
+        ((path == null) ? "" : ("; path=" + path)) + ((domain == null) ? "" : ("; domain=" + domain)) +
+        ((secure == true) ? "; secure" : "");
+}
+
+function getCookieFun(name) {
+    var arr = document.cookie.match(new RegExp("(^| )" + name + "=([^;]*)(;|$)"));
+    if (arr != null) { return (arr[2]); } else { return ""; }
+}
+
+function delCookieFun(name) {
+    var exp = new Date();
+    exp.setTime(exp.getTime() - 1);
+    var cval = getCookieFun(name);
+    if (cval != null) document.cookie = name + "=" + cval + ";expires=" + exp.toGMTString();
+}
+//搜索通用方法
+function searchFbFun(tureInput, falseInput) {
+    falseInput.focus(function(e) {
+        tureInput.show();
+        falseInput.hide();
+        tureInput.focus();
+    });
+    tureInput.blur(function(e) {
+        if (tureInput.val() == '') {
+            falseInput.show();
+            tureInput.hide();
+        }
+    });
+}
+
+function subSearchFun(tureInput, falseInput, searchButton) {
+    searchButton.attr("href", "javascript:;");
+    tureInput.keydown(function(e) { if (e.keyCode == 13) { searchButton.click(); } });
+    searchButton.bind("click", function() { if (checkKeywords(tureInput, falseInput)) t(tureInput); });
+    var t = function(tureInput) {
+        var a = encodeURI(tureInput.val());
+        var url = "";
+        url = "http://so.kaoyan.com/cse/search?s=234401477647341483&q=" + a;
+        $("<form/>").attr({
+            action: url,
+            method: "post",
+            target: "_self"
+        }).appendTo(document.body).submit().remove()
+    };
+}
+
+function checkKeywords(tureInput, falseInput) {
+    String.prototype.Trim = function() { return this.replace(/^\s+|\s+$|(?:^ )+|(?: $)+/g, ""); }
+    var keywords = tureInput.val().Trim();
+    if (keywords == "") {
+        falseInput.show();
+        falseInput.attr("style", "background:#F5EDD8");
+        setTimeout(function() { falseInput.attr("style", ""); }, 200);
+        setTimeout(function() { falseInput.attr("style", "background:#F5EDD8"); }, 300);
+        setTimeout(function() { falseInput.attr("style", ""); }, 500);
+        return false;
+    }
+    return true;
+}
+$(function() {
+        function kyhdHover(hoverElements) {
+            hoverElements.each(function() {
+                that = $(this);
+                that.hoverDelay({
+                    hoverEvent: function() {
+                        $(this).addClass("kyon");
+                    },
+                    outEvent: function() {
+                        $(this).removeClass("kyon");
+                    }
+                });
+            });
+        }
+        kyhdHover($(".kyHandle li"));
+        searchFbFun($("#hdt_Keywords"), $("#hdf_Keywords"));
+        subSearchFun($("#hdt_Keywords"), $("#hdf_Keywords"), $('.kySearchBtn'));
+        //头部cookie
+        var kyUserAuth = getCookieFun("GgTR_e0c0_auth");
+        if (kyUserAuth) {
+            $(".kyFr").children().not($("#kyHandle")).remove();
+            $("#kyHandle").before("<p class=\"kyMyInfo\"><span>Hi，欢迎进入：<\/span><a href=\"http://home.kaoyan.com\" target=\"_blank\">个人中心<\/a><a href=\"http://bbs.kaoyan.com/forum.php?mod=guide&view=my\" target=\"_blank\">我的帖子<\/a><a href=\"http://home.kaoyan.com/home.php?mod=space&do=pm\" target=\"_blank\">消息<\/a><span class=\"kyGap\"><\/span><a href=\"http://home.kaoyan.com/member.php?mod=logging&action=logout\" target=\"_self\">退出</a><\/p>")
+        } else {
+            $(".kyFr").children().not($("#kyHandle")).show();
+        };
+        var a = getCookieFun('GgTR_e0c0_auth');
+        var b = getCookieFun('syncuyan');
+        if (a && (!b || b == 'logout')) {
+            delCookieFun('syncuyan');
+            jQuery.ajax({
+                data: {},
+                url: "http://bbs.kaoyan.com/youyan.php",
+                type: "GET",
+                jsonpCallback: "ky",
+                dataType: 'jsonp',
+                success: function(data) {
+                    setCookieFun('syncuyan', data.cookie);
+                    $.getScript("http://v2.uyan.cc/code/uyan.js?uid=1927047");
+                }
+            });
+        } else if (!a && b != 'logout') {
+            setCookieFun('syncuyan', 'logout');
+            $.getScript("http://v2.uyan.cc/code/uyan.js?uid=1927047");
+        } else {
+            $.getScript("http://v2.uyan.cc/code/uyan.js?uid=1927047");
+        }
+    })
+    //头部js结束
+$(".indexTab li").hover(function() {
+    var index = $(this).parent().children("li").removeClass().index($(this).addClass("cur"));
+    $(this).parent().siblings(".indexTabCon").children("ul").css("display", "none").eq(index).css("display", "block");
+});
+$(function() {
+    var totalnum = $("#focusImg img").size();
+    var index = 0;
+    $("#focusImg").after("<ul id='focusNum'></ul>");
+    for (i = 1; i <= totalnum; i++) {
+        $("<li></li>").appendTo("#focusNum");
+    }
+    $("#focusInfo").html("<a href='" + $('#focusImg a:first-child').attr('href') + "' target='_blank'>" + $('#focusImg a:first-child').find("img").attr('alt') + "</a>");
+    $('#focusImg a img:eq(0)').css('display', 'inline');
+    $("#focusNum li").eq(0).addClass("cur");
+    $("#focusNum li").mouseover(function() {
+        index = $("#focusNum li").index(this);
+        showImg(index);
+        clearInterval(MyTime);
+    });
+    $("#focusNum li").hover(function() {
+            if (MyTime) {
+                clearInterval(MyTime);
+            }
+        },
+        function() {
+            MyTime = setInterval(function() {
+                index++;
+                if (index == totalnum) { index = 0; }
+                showImg(index)
+            }, 5000);
+        }
+    );
+    var MyTime = setInterval(function() {
+        index++;
+        if (index == totalnum) { index = 0; }
+        showImg(index)
+    }, 5000)
+
+    function showImg(i) {
+        $("#focusImg img").parent().siblings().find("img").hide().eq(i).stop(true, true).fadeIn(600);
+        $("#focusInfo").html("<a href='" + $('#focusImg a').eq(i).attr('href') + "' target='_blank'>" + $('#focusImg a').eq(i).find("img").attr('alt') + "</a>");
+        $("#focusNum li").eq(i).addClass("cur").siblings().removeClass("cur");
+    }
+
+    //$("#firstTabCon").find("ul li:nth-child(6)").addClass("line");
+
+    searchFbFun($("#txt_Keywords"), $("#text_Keywords"));
+    subSearchFun($("#txt_Keywords"), $("#text_Keywords"), $('#searchBtn'));
+
+    //地区下拉
+    var temp_html;
+    var oProvince = $(this).find("#dataArea");
+    var oCity = $(this).find("#dataSchool");
+    //初始化省
+    if (oProvince.length > 0 || oCity.length > 0) {
+        var aProvince = function() {
+            temp_html = "";
+            $.each(schCity, function(i, province) {
+                temp_html += "<option value='" + province.en + "'>" + province.name + "</option>";
+            });
+            oProvince.html(temp_html).sSelect();
+        };
+        //赋值学校
+        var aSchool = function() {
+            temp_html = "";
+            var n = oProvince.get(0).selectedIndex;
+            $.each(schCity[n].sub, function(i, school) {
+                temp_html += "<option value='" + school.en + "'>" + school.name + "</option>";
+            });
+            oCity.html(temp_html).sSelect();
+            oCity.siblings('.dropselectbox').children('strong').text($("#dataSchool").children('select').children('option:nth-child(1)').text());
+        };
+        //选择地区改变学校
+        oProvince.change(function() {
+            aSchool();
+        });
+        aProvince();
+        aSchool();
+    }
+
+    $(".dataSearchBtn").click(function() {
+        var getSelectSchool = $("#dataSchool").find('strong').attr("rel");
+        $(this).attr({ href: "http://yz.kaoyan.com/" + getSelectSchool + "/zhenti/", target: "_blank" });
+    })
+})
+
+/*通栏时间轴*/
+
+var $tNum = $(".timeScolling").children(".timeItem").length;
+var $tsWidth = $(".timeItem").width() + 48;
+var $tsWaper = $(".timeScolling");
+$tsWaper.width($tNum * $tsWidth);
+
+//console.log($tNum);
+
+
+var slider_count = 0;
+
+if ($tNum < 5) {
+    $('.timeScrollRight').css({ cursor: 'auto' });
+    $('.timeScrollRight').removeClass("dasabled");
+}
+
+$('.timeScrollRight').click(function() {
+    if ($tNum < 5 || slider_count >= $tNum - 5) {
+        return false;
+    }
+    slider_count++;
+    $tsWaper.animate({ left: '-=' + $tsWidth + 'px' }, 'slow');
+    slider_pic();
+});
+
+$('.timeScrollLeft').click(function() {
+    if (slider_count <= 0) {
+        return false;
+    }
+    slider_count--;
+    $tsWaper.animate({ left: '+=' + $tsWidth + 'px' }, 'slow');
+    slider_pic();
+});
+
+function slider_pic() {
+    if (slider_count >= $tNum - 5) {
+        $('.timeScrollRight').css({ cursor: 'auto' });
+        $('.timeScrollRight').addClass("dasabled");
+        $('.timeScrollLeft').removeClass("dasabled");
+        $('.timeScrollLeft').css({ cursor: 'pointer' });
+    } else if (slider_count > 0 && slider_count <= $tNum - 5) {
+        $('.timeScrollLeft').css({ cursor: 'pointer' });
+        $('.timeScrollLeft').removeClass("dasabled");
+        $('.timeScrollRight').css({ cursor: 'pointer' });
+        $('.timeScrollRight').removeClass("dasabled");
+    } else if (slider_count <= 0) {
+        $('.timeScrollLeft').css({ cursor: 'auto' });
+        $('.timeScrollLeft').addClass("dasabled");
+        $('.timeScrollRight').removeClass("dasabled");
+        $('.timeScrollRight').css({ cursor: 'pointer' });
+    }
+}
+
+/*地区选择*/
+$(".yzCurArea").click(function() {
+    $(".yzAreaPop").toggle();
+})
+$("body").click(function(event) {
+    if ((event.target.className != "yzCurArea") && (event.target.className != "yzCurAreaI")) {
+        $(".yzAreaPop").hide();
+    }
+});
+$(".yzAreaPop").click(function(e) {
+    e = e || window.event;
+    if (document.all) {
+        e.cancelBubble = true;
+    } else {
+        e.stopPropagation();
+    }
+});
+$(".yzAreaList li").click(function() {
+    $(".yzCurArea").html($(this).text() + "<i></i>");
+    location.href = $(this).attr("rel");
+    $(".yzAreaPop").hide();
+})
+
+/*首页弹层广告*/
+// $(function(){
+//   var adArr = [];
+//   adArr.push('');
+//   adArr.push('<div class="dialog_ad_center" id="J_dialog_ad_center">');
+//     adArr.push('<span class="close" title="关闭"></span>');
+//     adArr.push('<a href="http://xue.kaoyan.com/t/spread/vip?channelid=101" target="_blank"><img src="http://img.kaoyan.com/home/images/dialog_0513.jpg" alt=""></a>');
+//   adArr.push('</div>');
+
+//   $(adArr.join('')).appendTo('body');
+
+//   $('#J_dialog_ad_center').show('fast',function(){
+//     var timer = null;
+//     $('.close','#J_dialog_ad_center').on('click',function(){
+//       clearTimeout(timer);
+//       removeAd();
+//     });
+
+//     timer = setTimeout(function(){
+//       removeAd();
+//     },5000)
+
+//   })
+
+//   function removeAd(){
+//     $('#J_dialog_ad_center').animate({
+//       opacity : 0,
+//       'width' : $(this).width()*1.001,
+//       'height' : $(this).height()*1.001,
+//       'marginLeft' :  - $(this).width()*1.001/2,
+//       'marginTop' :  - $(this).height()*1.001/2,
+//     },500,function(){
+//       $('#J_dialog_ad_center').remove();
+//     })
+//   }
+// })

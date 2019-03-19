@@ -1,0 +1,313 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>考研资源共享系统_注册</title>
+    <link rel="stylesheet" href="css/bootstrap.min.css" type="text/css" />
+    <script src="js/jquery-1.11.3.min.js" type="text/javascript"></script>
+    <script src="js/bootstrap.min.js" type="text/javascript"></script>
+    <script src="ky.index.packed.js.下载" type="text/javascript"></script>
+    <link rel="stylesheet" href="css/register.css">
+	<script src="js/include.js"></script>
+	<link rel="shortcut icon" href="kyicon.ico" type="image/x-icon" />
+    
+    <script>
+    /*
+             表单校验：
+        1.用户名：汉字单词，长度8到20位
+        2.密码：单词字符，长度6到20位
+        3.email：邮件格式
+        4.本科院校：非空
+        5.报考院校：非空
+        6.考研日期：非空
+        7.手机号：手机号格式
+        8.性别  男女非空
+        9.验证码：非空
+     */
+
+        // 校验用户名
+        // 汉字单词，长度8到20位
+        function checkUsername() {
+            // 1.获取用户名值
+            var username = $("#uname").val();
+            // 2.定义正则
+            var reg_username = /^\w{6,20}$/;
+            // 3.判断，给出提示信息
+            var flag = reg_username.test(username);
+            if(flag){
+                // 用户名合法
+                $("#uname").css("border","");
+            }else {
+                // 用户名非法,加一个红色边框
+                $("#uname").css("border","1px solid red");
+            }
+            return flag;
+        }
+        
+        // 校验密码
+        function checkPassword() {
+            // 1.获取用户名值
+            var password = $("#upassword").val();
+            // 2.定义正则
+            var reg_password = /^\w{6,20}$/;
+            // 3.判断，给出提示信息
+            var flag = reg_password.test(password);
+            if(flag){
+                // 用户名合法
+                $("#upassword").css("border","");
+            }else {
+                // 用户名非法,加一个红色边框
+                $("#upassword").css("border","1px solid red");
+            }
+            return flag;
+        }
+
+        // 校验邮箱
+        function checkEmail(){
+            // 1.获取邮箱
+            var email = $("#uemail").val();
+            // 2.正则校验
+            var reg_email = /^\w+@\w+\.\w+$/;
+            // 3.判断给出提示信息
+            var flag = reg_email.test(email);
+            if (flag){
+                $("#uemail").css("border","");
+            } else{
+                $("#uemail").css("border","1px solid red");
+            }
+            return flag;
+        }
+
+        $(function () {
+            // 当表单提交时，调用所有的校验方法
+            $("#registerForm").submit(function () {
+                // 发送数据到服务器
+                if(checkUsername() && checkPassword() && checkEmail()){
+					//alert("输入正确");
+                    // 校验通过，发送ajax请求，提交表单数据
+                    $.post("RegisterUserServlet",$(this).serialize(),function (data) {
+                    // 处理服务器响应的数据 data
+						if(data.flag){
+							// 注册成功，跳转成功页面
+							location.href="login.html";
+						}else{
+							// 注册失败,给errorMsg添加提示信息
+							$("#errorMsg").html(data.errorMsg);
+						}
+                    });
+                }
+                // 不让页面跳转
+                return false;
+                // 如果这个方法没有返回值，或者返回位true，则表单提交，如果返回位false,则表单不提交
+            });
+
+            // 当某一个组件失去焦点时，调用对应的校验方法
+            $("#uname").blur(checkUsername);
+            $("#upassword").blur(checkPassword);
+            $("#uemail").blur(checkEmail);
+        });
+    </script>
+	
+	<script type="text/javascript">
+	function Warning(nid){
+		/*点击操作无效，提示用户登录
+		*/
+		alert("对不起，您还未登录，请先登录或注册！");
+	}
+	</script>
+	
+	<style type="text/css">
+        #nv {
+          padding-top: 10px;
+          padding-bottom: 10px;
+          background-color: #f5f5f5;
+		  border: 1px solid #e3e3e3;
+		  border-radius: 4px;
+  		-webkit-box-shadow: inset 0 1px 1px rgba(0, 0, 0, .05);
+          box-shadow: inset 0 1px 1px rgba(0, 0, 0, .05);
+        }
+    </style>
+</head>
+<body>
+	<!-- 导入头部 -->
+		<!--
+	    	描述：菜单栏
+		-->
+        <div class="container-fluid " id="nv">
+            <div class="col-md-5">
+                <img src="img/SysLogo.png" />
+            </div>
+            <div class="col-md-7" style="padding-top:120px" align="right">
+                <div class="shortcut">
+                    <!-- 未登录状态  -->
+                    <a href="register.html">
+                        <span class="glyphicon glyphicon-user" style="color: rgb(51,122,183); font-size: 15px;"> 注册&nbsp;</span>
+                    </a>
+                    <a href="login.html">
+                        <span class="glyphicon glyphicon-log-in" style="color: rgb(51,122,183); font-size: 15px;"> 登录&nbsp;</span>
+                    </a>
+
+                    <span id="span_officialEmail" class="glyphicon glyphicon-envelope" style="color: rgb(51,122,183);"> 官方邮箱</span>
+                </div>
+            </div>
+        </div>
+	
+        <!--  
+        	导航栏  
+        -->
+        <div class="col-md-9" >
+            <ul class="nav nav-pills nav-justified" style="border:5px;color:rgb(204,204,204)">
+                <li class="active " style="color: rgb(51,122,183); font-size: 18px;"><a href="#" onclick="Warning()">首页</a></li>
+                <li style="color: rgb(51,122,183); font-size: 18px;"><a href="#" onclick="Warning()">经验贴</a></li>
+                <li style="color: rgb(51,122,183); font-size: 18px;"><a href="#" onclick="Warning()">电子资料</a></li>
+                <li style="color: rgb(51,122,183); font-size: 18px;"><a href="#" onclick="Warning()">纸质资料</a></li>
+                <li style="color: rgb(51,122,183); font-size: 18px;"><a href="#" onclick="Warning()">站外信息</a></li>
+           	</ul>
+        </div>
+        <div class="col-md-3">
+            <form class="navbar-form navbar-right" role="search">
+                <div class="form-group">
+                    <input type="text" class="form-control" placeholder="Search">
+                </div>
+                <button type="submit" class="btn btn-default">Submit</button>
+            </form>
+        </div>
+        <br>
+        <br>
+	<!-- 头部 end -->
+	
+	
+	<!--
+	           中间注册表单部分
+	-->
+	<div class="rg_layout" style="background-size: 100% 1000px">
+	    <div class="rg_form clearfix" style="height:650px;margin-top:150px">
+	        <div class="rg_form_left">
+	            <p>新用户注册</p>
+	            <p>USER REGISTER</p>
+	        </div>
+	        <div class="rg_form_center">
+				<div id="errorMsg" style="color:red; text-align:center"></div>
+	            <!--注册表单-->
+	           	<!-- <form id="registerForm" action="RegisterUserServlet" method="post"> -->
+	            <form id="registerForm" action="user">
+	                <!--提交处理请求的标识符-->
+	                <input type="hidden" name="action" value="register">
+	                <table style="margin-top: 25px;">
+	                    <tr>
+	                        <td class="td_left">
+	                            <label for="uname">用户名</label>
+	                        </td>
+	                        <td class="td_right">
+	                            <input type="text" id="uname" name="uname" placeholder="请输入账号">
+	                        </td>
+	                    </tr>
+	                    <tr>
+	                        <td class="td_left">
+	                            <label for="upassword">密码</label>
+	                        </td>
+	                        <td class="td_right">
+	                            <input type="text" id="upassword" name="upassword" placeholder="请输入密码">
+	                        </td>
+	                    </tr>
+	                    <tr>
+	                        <td class="td_left">
+	                            <label for="uemail">Email</label>
+	                        </td>
+	                        <td class="td_right">
+	                            <input type="text" id="uemail" name="uemail" placeholder="请输入Email">
+	                        </td>
+	                    </tr>
+	                    <tr>
+	                        <td class="td_left">
+	                            <label for="ubenke">本科院校</label>
+	                        </td>
+	                        <td class="td_right">
+	                            <input type="text" id="ubenke" name="ubenke" placeholder="请输入本科院校名称">
+	                        </td>
+	                    </tr>
+	                    <tr>
+	                        <td class="td_left">
+	                            <label for="ubaokao">报考院校</label>
+	                        </td>
+	                        <td class="td_right">
+	                            <input type="text" id="ubaokao" name="ubaokao" placeholder="请输入报考院校名称">
+	                        </td>
+	                    </tr>
+	                    <tr>
+	                        <td class="td_left">
+	                            <label for="umajor">专业</label>
+	                        </td>
+	                        <td class="td_right">
+	                            <input type="text" id="umajor" name="umajor" placeholder="请输入报考专业名称">
+	                        </td>
+	                    </tr>
+	                    <tr>
+	                        <td class="td_left">
+	                            <label for="uphone">手机号</label>
+	                        </td>
+	                        <td class="td_right">
+	                            <input type="text" id="uphone" name="uphone" placeholder="请输入您的手机号">
+	                        </td>
+	                    </tr>
+	                    <tr>
+	                        <td class="td_left">
+	                            <label for="ugender">性别</label>
+	                        </td>
+	                        <td class="td_right gender">
+	                            <input type="radio" id="ugender" name="ugender" value="男" checked> 男
+	                            <input type="radio" name="ugender" value="女"> 女
+	                        </td>
+	                    </tr>
+	                    <tr>
+	                        <td class="td_left">
+	                            <label for="uyear">考研时间</label>
+	                        </td>
+	                        <td class="td_right">
+	                            <input type="text" id="uyear" name="uyear" placeholder="年-月-日">
+	                        </td>
+	                    </tr>
+	                    <tr>
+	    							<td class="td_left">
+	    								<label for="check">验证码</label>
+	    							</td>
+	    							<td class="td_right check">
+	    								<input type="text" id="check" name="check" class="check">
+	    								<img src="checkCode" height="32px" alt="" onclick="changeCheckCode(this)">
+										<script type="text/javascript">
+											//图片点击事件
+											function changeCheckCode(img) {
+												img.src="checkCode?"+new Date().getTime();
+	                                        }
+										</script>
+	    							</td>
+	    						</tr>
+	
+	                    <tr>
+	                        <td class="td_left">
+	                        </td>
+	                        <td class="td_right check">
+	                            <input type="submit" class="submit" value="注册">
+	                            <span id="msg" style="color: red;"></span>
+	                        </td>
+	                    </tr>
+	                </table>
+	            </form>
+	        </div>
+	        <div class="rg_form_right">
+	            <p>
+	                已有账号？
+	                <a href="login.html">立即登录</a>
+	            </p>
+	        </div>
+	    </div>
+	</div>
+	
+	
+	
+	<!-- 导入底部 -->
+	<div id="footer"></div>
+</body>
+</html>

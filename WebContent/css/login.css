@@ -1,0 +1,124 @@
+html£¬body {
+	width:100%;
+	height:100%;
+}
+#login_wrap {
+    width:100%;
+    min-width: 1000px;
+    overflow: hidden;
+    position: relative;
+}
+
+.login-box {
+    width: 380px;
+    height: 420px;
+    position: relative;
+    top: 40px;
+    left:420px;
+    background: #f1f1f1;
+}
+.title {
+    height: 80px;
+    line-height: 80px;
+    background: #0088cc;
+    font-size: 20px;
+    padding:0 30px; 
+}
+.title img {
+    float: left;
+    margin-top: 12px;
+    margin-right: 15px;
+}
+.login_inner {    
+    overflow: hidden;
+    padding: 10px 50px;    
+}
+
+.alert {
+    margin: 0 auto;
+    padding: 6px 10px;
+    border: 1px solid transparent;   
+    text-align: left;
+    color: #a94442;
+    background-color: #f2dede;
+    border-color: #ebccd1;
+    margin-bottom: 17px;
+    font-size: 12px;
+}
+.login_inner form{
+    width: 100%;
+    overflow: hidden;
+    padding-bottom: 50px;
+    border-bottom: 1px solid #808080;
+}
+.login_inner input {
+    display: inline-block;
+    width: 246px;
+    height: 26px;
+    border: 1px solid #d8d8d8;   
+    font-size: 18px;
+    color: #666;
+    line-height: 28px;
+    padding: 6px 0 10px 12px;
+    box-shadow: 0 0 5px #fff;
+    outline: none;
+    transition: box-shadow 0.25s linear 0s;
+    -webkit-transition: box-shadow 0.25s linear 0s;
+    margin-bottom: 17px;
+}
+.verify input {
+    width: 130px;
+    margin-right: 20px;
+    float: left;
+    margin-bottom: 0;
+}
+
+.submit_btn {
+    width: 120px;
+    height: 40px;
+    border: none;
+    text-align: center;
+    line-height: 40px;
+    color: #000;
+    font-size: 18px;
+    font-weight: bold;
+    cursor: pointer;
+    float: left;
+    padding-top:20px;
+}
+.reset_btn {
+   width: 120px;
+   height: 40px;
+   border: none;
+   text-align: center;
+   line-height: 40px;
+   color: #000;
+   font-size: 18px;
+   font-weight: bold;
+   cursor: pointer;
+   float: left;
+   padding-top:20px
+   padding-left:10px
+}
+.submit_btn .checkbox {
+    float: left;
+    width: 17px;
+    margin: 7px 5px 0 54px;
+}
+.submit_btn  span {
+    line-height: 35px;
+}
+
+.reg {
+    border-top: 1px solid #eeeeee;
+    margin-top: 20px;
+    width: 100%;
+    height: 40px;
+    line-height: 40px;
+    background: #f1f1f1;
+    text-align: center;
+    font-size: 16px;
+}
+.reg a {
+    color: #fc7f7f;
+}

@@ -1,0 +1,13 @@
+package pers.fangxin.ky.utils;
+
+public class TextUtils {
+	
+	/**
+	 * ÅÐ¶ÏÄ³¸ö×Ö·û´®ÊÇ·ñÎª¿Õ
+	 * @param cs
+	 * @return
+	 */
+	public static boolean isEmpty(CharSequence cs){
+		return cs == null || cs.length() == 0;
+	}
+}
